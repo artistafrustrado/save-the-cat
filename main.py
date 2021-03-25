@@ -28,9 +28,6 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication([])
 
     File = QtCore.QFile("resources/stye.qss")
-#        if nof File.open( QtCore.QFile.ReadOnly | QtCore.QFile.Text):
-#            return
-#    with File.open(QtCore.QFile.Text):
     File.open(QtCore.QFile.ReadOnly)
     qss = QtCore.QTextStream(File)
 	#setup stylesheet
