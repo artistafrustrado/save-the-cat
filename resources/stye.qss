@@ -1,0 +1,10 @@
+QLabel
+{
+	background: #FFCC00;
+	color: #000000;
+}
+
+MyWidget
+{
+	background: #FF0000;
+}
