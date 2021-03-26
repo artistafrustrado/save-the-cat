@@ -2,6 +2,7 @@
 
 import sys
 import random
+import json
 from PySide6 import QtGui
 from PySide6.QtCore import *
 from PySide6.QtGui import *
@@ -12,37 +13,48 @@ from BeatSheetIems import *
 
 
 class BeatSheetGridWidget(QWidget):
+    _items = []
     def __init__(self):
         super().__init__()
         self.setUI()
 
+    def save(self):
+        items = []
+        for item in self._items:
+            items.append(item['item'].serialize())
+        with open("save/save-the-cat.cat", "w") as write_file:
+        #jsonString = print(json.dumps(self._items, sort_keys=True, indent=4))
+            json.dump(items, write_file, sort_keys=True, indent=4)
+        #    json.dump(self._items, write_file)
+        print(items)
+
     def setUI(self):
         grid = QGridLayout()
 
-        items = [
+        self._items = [
                 {"item":BeatSheetItemOpenImageWidget(), "position-x": 0, "position-y": 0},
-                {"item":BeatSheetItemWidget(), "position-x": 0, "position-y": 1},
-                {"item":BeatSheetItemWidget(), "position-x": 0, "position-y": 2},
-                {"item":BeatSheetItemWidget(), "position-x": 0, "position-y": 3},
-                {"item":BeatSheetItemOpenImageWidget(), "position-x": 1, "position-y": 0},
-                {"item":BeatSheetItemWidget(), "position-x": 1, "position-y": 1},
-                {"item":BeatSheetItemWidget(), "position-x": 1, "position-y": 2},
-                {"item":BeatSheetItemWidget(), "position-x": 1, "position-y": 3},
-                {"item":BeatSheetItemOpenImageWidget(), "position-x": 2, "position-y": 0},
-                {"item":BeatSheetItemWidget(), "position-x": 2, "position-y": 1},
-                {"item":BeatSheetItemWidget(), "position-x": 2, "position-y": 2},
-                {"item":BeatSheetItemWidget(), "position-x": 2, "position-y": 3},
-                {"item":BeatSheetItemOpenImageWidget(), "position-x": 3, "position-y": 0},
-                {"item":BeatSheetItemWidget(), "position-x": 3, "position-y": 1},
-                {"item":BeatSheetItemWidget(), "position-x": 3, "position-y": 2},
-                {"item":BeatSheetItemWidget(), "position-x": 3, "position-y": 3}
+                {"item":BeatSheetItemThemwStatedWidget(), "position-x": 0, "position-y": 1},
+                {"item":BeatSheetItemSetupWidget(), "position-x": 0, "position-y": 2},
+                {"item":BeatSheetItemCatalystWidget(), "position-x": 0, "position-y": 3},
+                {"item":BeatSheetItemDebateWidget(), "position-x": 1, "position-y": 0},
+                {"item":BeatSheetItemBreakeInto2Widget(), "position-x": 1, "position-y": 1},
+                {"item":BeatSheetItemFunAndGamesWidget(), "position-x": 1, "position-y": 2},
+                {"item":BeatSheetItemMidpointWidget(), "position-x": 1, "position-y": 3},
+                {"item":BeatSheetItemBadGuysCloseInWidget(), "position-x": 2, "position-y": 0},
+                {"item":BeatSheetItemAllIsLostWidget(), "position-x": 2, "position-y": 1},
+                {"item":BeatSheetItemDarkNoghtOfTheSoulWidget(), "position-x": 2, "position-y": 2},
+                {"item":BeatSheetItemBreakInto3Widget(), "position-x": 2, "position-y": 3},
+                {"item":BeatSheetItemGatheringTheTeamWidget(), "position-x": 3, "position-y": 0},
+                {"item":BeatSheetItemStormingTheCastleWidget(), "position-x": 3, "position-y": 1},
+                {"item":BeatSheetItemHightoweSurpriseWidget(), "position-x": 3, "position-y": 2},
+                {"item":BeatSheetItemDigDeepDownWidget(), "position-x": 3, "position-y": 3},
+                {"item":BeatSheetItemExecutingThePlanWidget(), "position-x": 4, "position-y": 0},
+                {"item":BeatSheetItemFinalImageWidget(), "position-x": 4, "position-y": 1}
                 ]
-        for item in items:
-            print(item)
+        for item in self._items:
             grid.addWidget(item['item'],item['position-x'], item['position-y'])
 
         self.setLayout(grid)
-
 
 
 class AppMainWindow(QMainWindow):
@@ -55,14 +67,15 @@ class AppMainWindow(QMainWindow):
     def initGrid(self):
         textEdit = QTextEdit()
         #self.setCentralWidget(textEdit)
-        grid = BeatSheetGridWidget()
-        self.setCentralWidget(grid)
+        self._grid = BeatSheetGridWidget()
+        self.setCentralWidget(self._grid)
 
 
     def initUI(self):               
         exitIcon = "/usr/src/frustrado/scribus/resources/iconsets/1_5_1_dark/exit22.png"
         newIcon = "/opt/git/scribus/share/scribus/icons/1_5_1_dark/document2.png"
         saveIcon = "/usr/share/scribus/icons/1_5_1_dark/22/document-save.png"
+        openIcon = "/opt/git/scribus/share/scribus/icons/1_5_1_dark/22/document-open.png"
         exportIcon = "/opt/git/scribus/share/scribus/icons/1_5_1_dark/22/document-print.png"
         appIcon = "/opt/kritadev/install/share/icons/hicolor/64x64/apps/krita.png"
 
@@ -75,18 +88,23 @@ class AppMainWindow(QMainWindow):
 
         newAction = QtGui.QAction(QIcon(newIcon),'New', self)
         newAction.setShortcut('Ctrl+N')
-        newAction.setStatusTip('Exit application')
-        newAction.triggered.connect(self.close)
+        newAction.setStatusTip('New Beat Sheet')
+        newAction.triggered.connect(self.new)
 
         saveAction = QtGui.QAction(QIcon(saveIcon),'Save', self)
         saveAction.setShortcut('Ctrl+S')
-        saveAction.setStatusTip('Exit application')
-        saveAction.triggered.connect(self.close)
+        saveAction.setStatusTip('Save Beat Sheet')
+        saveAction.triggered.connect(self.save)
+
+        openAction = QtGui.QAction(QIcon(openIcon),'Open', self)
+        openAction.setShortcut('Ctrl+S')
+        openAction.setStatusTip('Open Beat Sheet')
+        openAction.triggered.connect(self.open)
 
         exportAction = QtGui.QAction(QIcon(exportIcon),'Export', self)
         exportAction.setShortcut('Ctrl+E')
-        exportAction.setStatusTip('Exit application')
-        exportAction.triggered.connect(self.close)
+        exportAction.setStatusTip('Export Beat Sheet')
+        exportAction.triggered.connect(self.export)
 
         self.statusBar()
 
@@ -94,11 +112,12 @@ class AppMainWindow(QMainWindow):
         fileMenu = menubar.addMenu('&File')
         fileMenu.addAction(exitAction)
 
-        toolbar = self.addToolBar('Exit')
+        toolbar = self.addToolBar('BeatSheet')
         toolbar.addAction(exitAction)
         
         toolbar.addAction(newAction)
         toolbar.addAction(saveAction)
+        toolbar.addAction(openAction)
         toolbar.addAction(exportAction)
         
         self.setWindowTitle('Save the Cat Beat Sheet') 
@@ -110,8 +129,21 @@ class AppMainWindow(QMainWindow):
         self.showMaximized()
 
         self.show()
-        
-        
+
+    def save(self):
+        self._grid.save()
+    
+    def open(self):
+        #self._grid.open()
+        print("Open")
+    
+    def new(self):
+        print("New")
+
+    def export(self):
+        print("New")
+
+
 def main():
     app = QApplication([])
     ex = AppMainWindow()

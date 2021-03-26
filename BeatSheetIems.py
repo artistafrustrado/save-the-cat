@@ -12,6 +12,7 @@ from PySide6 import QtCore, QtWidgets, QtGui
 class BeatSheetItemWidget(QWidget):
     title = "Example Title"
     _type = "opening-image"
+    text = "Example Text"
 
     def __init__(self):
         super().__init__()
@@ -20,10 +21,12 @@ class BeatSheetItemWidget(QWidget):
 
         self._title = QLabel("<b>" + self.title + "</b>",alignment=QtCore.Qt.AlignCenter)
         self.button = QPushButton("Click Me!")
-        self.text = QLabel("Hello World",alignment=QtCore.Qt.AlignCenter)
+        #self.text = QLabel("Hello World",alignment=QtCore.Qt.AlignCenter)
+        self._text = QTextEdit()
+        self._text.setPlainText(self.text)
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self._title)
-        self.layout.addWidget(self.text)
+        self.layout.addWidget(self._text)
         self.layout.addWidget(self.button)
 
         self.setLayout(self.layout)
@@ -33,6 +36,10 @@ class BeatSheetItemWidget(QWidget):
     @QtCore.Slot()
     def magic(self):
         self.text.setText(random.choice(self.hello))
+
+    def serialize(self):
+        data = {"title": self.title, "type": self._type, "text": self._text.toPlainText()}
+        return data
 
 class BeatSheetItemOpenImageWidget(BeatSheetItemWidget):
     def __init__(self):
