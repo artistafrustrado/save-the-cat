@@ -22,11 +22,17 @@ class BeatSheetGridWidget(QWidget):
         items = []
         for item in self._items:
             items.append(item['item'].serialize())
+
         with open("save/save-the-cat.cat", "w") as write_file:
-        #jsonString = print(json.dumps(self._items, sort_keys=True, indent=4))
             json.dump(items, write_file, sort_keys=True, indent=4)
-        #    json.dump(self._items, write_file)
-        print(items)
+
+    def load(self):
+        with open('save/save-the-cat.cat', 'r') as json_data:
+            json_data = json.load(json_data)
+            for item in self._items:
+                for entry in json_data:
+                    if entry['type'] == item['item'].getType():
+                        item['item'].setText(entry['text'])
 
     def setUI(self):
         grid = QGridLayout()
@@ -136,6 +142,7 @@ class AppMainWindow(QMainWindow):
     def open(self):
         #self._grid.open()
         print("Open")
+        self._grid.load()
     
     def new(self):
         print("New")

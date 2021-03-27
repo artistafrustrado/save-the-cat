@@ -17,6 +17,7 @@ class BeatSheetItemWidget(QWidget):
     def __init__(self):
         super().__init__()
 
+    def setUI(self):
         self.hello = ["Hello World","Hei maailma","Hola Mundo", "Can't type that"]
 
         self._title = QLabel("<b>" + self.title + "</b>",alignment=QtCore.Qt.AlignCenter)
@@ -41,113 +42,155 @@ class BeatSheetItemWidget(QWidget):
         data = {"title": self.title, "type": self._type, "text": self._text.toPlainText()}
         return data
 
+    def setType(self, string_type):
+        self._type = string_type
+
+    def getType(self):
+        return self._type
+
+    def setText(self, text):
+        self.text = text
+        self._text.setPlainText(self.text)
+    
+    def setTitle(self, title):
+        self.title = title
+
+
 class BeatSheetItemOpenImageWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Opening Image"
-        self.type = "opening-image"
         super().__init__()
+        self.title = "Opening Image"
+        self._type = "opening-image"
+        self.setUI()
 
 class BeatSheetItemThemwStatedWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Theme Stated"
-        self.type = "theme-stated"
         super().__init__()
+        self.title = "Theme Stated"
+        self._type = "theme-stated"
+        self.setUI()
 
 class BeatSheetItemSetupWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Setup"
-        self.type = "setup"
         super().__init__()
+        self.title = "Setup"
+        self._type = "setup"
+        self.setUI()
+
 
 class BeatSheetItemCatalystWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Catalyst"
-        self.type = "catalyst"
         super().__init__()
+        self.title = "Catalyst"
+        self._type = "catalyst"
+        self.setUI()
 
 class BeatSheetItemDebateWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Debate"
-        self.type = "debate"
         super().__init__()
+        self.title = "Debate"
+        self._type = "debate"
+        self.setUI()
 
 class BeatSheetItemBreakeInto2Widget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Break into 2"
-        self.type = "break-into-2"
         super().__init__()
+        self.title = "Break into 2"
+        self._type = "break-into-2"
+        self.setUI()
 
 class BeatSheetItemFunAndGamesWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Fun and Games"
-        self.type = "fun-and-games"
         super().__init__()
+        self.title = "Fun and Games"
+        self._type = "fun-and-games"
+        self.setUI()
 
 class BeatSheetItemMidpointWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Midpoint"
-        self.type = "midpoint"
         super().__init__()
+        self.title = "Midpoint"
+        self._type = "midpoint"
+        self.setUI()
 
 class BeatSheetItemBadGuysCloseInWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Bad Gyus Close In"
-        self.type = "bad-gyus-close-in"
         super().__init__()
+        self.title = "Bad Gyus Close In"
+        self._type = "bad-gyus-close-in"
+        self.setUI()
+
 
 class BeatSheetItemAllIsLostWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "All is Lost"
-        self.type = "all-is-lost"
         super().__init__()
+        self.title = "All is Lost"
+        self._type = "all-is-lost"
+        self.setUI()
+
 
 class BeatSheetItemDarkNoghtOfTheSoulWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Dark Night of the Soul"
-        self.type = "dark-night-of-the soul"
         super().__init__()
+        self.title = "Dark Night of the Soul"
+        self._type = "dark-night-of-the soul"
+        self.setUI()
+
 
 class BeatSheetItemBreakInto3Widget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Break Into 3"
-        self.type = "break-into-3"
         super().__init__()
+        self.title = "Break Into 3"
+        self._type = "break-into-3"
+        self.setUI()
+
 
 class BeatSheetItemGatheringTheTeamWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Gathering the Team"
-        self.type = "gathering-the-team"
         super().__init__()
+        self.title = "Gathering the Team"
+        self._type = "gathering-the-team"
+        self.setUI()
+
 
 class BeatSheetItemStormingTheCastleWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Storming the Castle"
-        self.type = "storming-the-castle"
         super().__init__()
+        self.title = "Storming the Castle"
+        self._type = "storming-the-castle"
+        self.setUI()
+
 
 class BeatSheetItemHightoweSurpriseWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Hightower Surprise"
-        self.type = "hightower-surprise"
         super().__init__()
+        self.title = "Hightower Surprise"
+        self._type = "hightower-surprise"
+        self.setUI()
+
 
 class BeatSheetItemDigDeepDownWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Dig Deep Down"
-        self.type = "dig-deep-down"
         super().__init__()
+        self.title = "Dig Deep Down"
+        self._type = "dig-deep-down"
+        self.setUI()
+
 
 
 class BeatSheetItemExecutingThePlanWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Executing the Plan"
-        self.type = "executing-the-plan"
         super().__init__()
+        self.title = "Executing the Plan"
+        self._type = "executing-the-plan"
+        self.setUI()
+
 
 
 class BeatSheetItemFinalImageWidget(BeatSheetItemWidget):
     def __init__(self):
-        self.title = "Final Image"
-        self.type = "final-image"
         super().__init__()
+        self.title = "Final Image"
+        self._type = "final-image"
+        self.setUI()
 
