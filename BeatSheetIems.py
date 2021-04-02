@@ -20,6 +20,10 @@ class BeatSheetItemWidget(QWidget):
     def setUI(self):
         self.hello = ["Hello World","Hei maailma","Hola Mundo", "Can't type that"]
 
+        self.setStyleSheet("QLabel { color: #FFFFFF; font-size: 11px; background-color: #000000; padding: 5px;}")
+        #self.setStyleSheet("QLabel { color: #FFFFFF; font-size: 11px; background-color: #000000; border: 1px solid rgba(188, 188, 188, 250); } QSpinBox { color: rgb(50, 50, 50); font-size: 11px; background-color: rgba(255, 188, 20, 50); }")
+
+
         self._title = QLabel("<b>" + self.title + "</b>",alignment=QtCore.Qt.AlignCenter)
         self.button = QPushButton("Click Me!")
         #self.text = QLabel("Hello World",alignment=QtCore.Qt.AlignCenter)
@@ -28,7 +32,7 @@ class BeatSheetItemWidget(QWidget):
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self._title)
         self.layout.addWidget(self._text)
-        self.layout.addWidget(self.button)
+#        self.layout.addWidget(self.button)
 
         self.setLayout(self.layout)
 
@@ -193,4 +197,53 @@ class BeatSheetItemFinalImageWidget(BeatSheetItemWidget):
         self.title = "Final Image"
         self._type = "final-image"
         self.setUI()
+
+
+class BeatSheetLoglineWidget(QWidget):
+    title = "Logline"
+    _type = "logline"
+    text = "Logline"
+
+    def __init__(self):
+        super().__init__()
+        self.setUI()
+
+    def setUI(self):
+        self.hello = ["Hello World","Hei maailma","Hola Mundo", "Can't type that"]
+
+        self.setStyleSheet("QLabel { color: #FFFFFF; font-size: 11px; background-color: #000000; padding: 5px;}")
+
+        self._title = QLabel("<b>" + self.title + "</b>",alignment=QtCore.Qt.AlignCenter)
+        self.button = QPushButton("Click Me!")
+        self._text = QTextEdit()
+        self._text.setPlainText(self.text)
+        self.layout = QVBoxLayout(self)
+        self.layout.addWidget(self._title)
+        self.layout.addWidget(self._text)
+#        self.layout.addWidget(self.button)
+
+        self.setLayout(self.layout)
+
+        self.button.clicked.connect(self.magic)
+
+    @QtCore.Slot()
+    def magic(self):
+        self.text.setText(random.choice(self.hello))
+
+#    def serialize(self):
+#        data = {"title": self.title, "type": self._type, "text": self._text.toPlainText()}
+#        return data
+#
+#    def setType(self, string_type):
+#        self._type = string_type
+#
+#    def getType(self):
+#        return self._type
+#
+#    def setText(self, text):
+#        self.text = text
+#        self._text.setPlainText(self.text)
+#    
+#    def setTitle(self, title):
+#        self.title = title
 

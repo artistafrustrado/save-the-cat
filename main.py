@@ -11,7 +11,8 @@ from PySide6 import QtCore, QtWidgets, QtGui
 
 from BeatSheetIems import *
 
-
+# https://zetcode.com/gui/pysidetutorial/dialogs/
+# https://david-estevez.gitbooks.io/tutorial-pyside-pyqt4/content/06_dialog.html
 class BeatSheetGridWidget(QWidget):
     _items = []
     def __init__(self):
@@ -23,16 +24,57 @@ class BeatSheetGridWidget(QWidget):
         for item in self._items:
             items.append(item['item'].serialize())
 
-        with open("save/save-the-cat.cat", "w") as write_file:
-            json.dump(items, write_file, sort_keys=True, indent=4)
+        filename, filter = QFileDialog.getSaveFileName(parent=self, caption='Select Save the Cat file', dir='.', filter='Save the Cat Beat Sheet (*.cat)')
+
+        if filename:
+            print(filename)
+            with open(filename, "w") as write_file:
+                json.dump(items, write_file, sort_keys=True, indent=4)
+
+    def export(self):
+        items = []
+        buffer = ''
+        for item in self._items:
+            items.append(item['item'].serialize())
+            buffer += '\subsection{' + item['item'].title + '}'
+            buffer += "\n\n"
+            buffer += item['item'].text
+            buffer += "\n\n"
+
+        filename, filter = QFileDialog.getSaveFileName(parent=self, caption='LaTex File (.tex)', dir='.', filter='LaTex File (*.tex)')
+
+        content = ''
+
+        print(buffer)
+
+        with open('templates/export-latex.tex', "r") as read_file:
+            template = read_file.read()
+            content = template.replace('<[CONTENT]>', buffer)
+        
+        if filename:
+            print(filename)
+            with open(filename, 'w',encoding = 'utf-8') as write_file:
+                write_file.write(content)
+                write_file.close()
 
     def load(self):
-        with open('save/save-the-cat.cat', 'r') as json_data:
+
+        filename, filter = QFileDialog.getOpenFileName(self, 'Open file', '~/')
+        with open(filename, 'r') as json_data:
             json_data = json.load(json_data)
             for item in self._items:
                 for entry in json_data:
                     if entry['type'] == item['item'].getType():
                         item['item'].setText(entry['text'])
+#        fileName = QFileDialog.getOpenFileName()
+#        print(fileName)
+#        fname, _ = QFileDialog.getOpenFileName(self, 'Open file', '/home')
+#        print(fname)
+#        f = open(fname, 'r')
+#        with f:
+#            data = f.read()
+#            self.textEdit.setText(data)
+
 
     def setUI(self):
         grid = QGridLayout()
@@ -60,6 +102,8 @@ class BeatSheetGridWidget(QWidget):
         for item in self._items:
             grid.addWidget(item['item'],item['position-x'], item['position-y'])
 
+        grid.addWidget(BeatSheetLoglineWidget(), 4, 2, 4, 3)
+
         self.setLayout(grid)
 
 
@@ -78,12 +122,12 @@ class AppMainWindow(QMainWindow):
 
 
     def initUI(self):               
-        exitIcon = "/usr/src/frustrado/scribus/resources/iconsets/1_5_1_dark/exit22.png"
-        newIcon = "/opt/git/scribus/share/scribus/icons/1_5_1_dark/document2.png"
-        saveIcon = "/usr/share/scribus/icons/1_5_1_dark/22/document-save.png"
-        openIcon = "/opt/git/scribus/share/scribus/icons/1_5_1_dark/22/document-open.png"
-        exportIcon = "/opt/git/scribus/share/scribus/icons/1_5_1_dark/22/document-print.png"
-        appIcon = "/opt/kritadev/install/share/icons/hicolor/64x64/apps/krita.png"
+        exitIcon = "resources/icons/exit22.png"
+        newIcon = "resources/icons/document2.png"
+        saveIcon = "resources/icons/document-save.png"
+        openIcon = "resources/icons/document-open.png"
+        exportIcon = "resources/icons/document-print.png"
+        appIcon = "resources/icons/krita.png"
 
         self.initGrid()
 
@@ -148,7 +192,8 @@ class AppMainWindow(QMainWindow):
         print("New")
 
     def export(self):
-        print("New")
+        print("Export")
+        self._grid.export()
 
 
 def main():
