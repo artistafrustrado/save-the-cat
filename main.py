@@ -57,6 +57,9 @@ class BeatSheetGridWidget(QWidget):
                 write_file.write(content)
                 write_file.close()
 
+    def exportHtml(self):
+        pass
+
     def load(self):
 
         filename, filter = QFileDialog.getOpenFileName(self, 'Open file', '~/')
@@ -127,6 +130,7 @@ class AppMainWindow(QMainWindow):
         saveIcon = "resources/icons/document-save.png"
         openIcon = "resources/icons/document-open.png"
         exportIcon = "resources/icons/document-print.png"
+        exportHtmlIcon = "resources/icons/goto.png"
         appIcon = "resources/icons/krita.png"
 
         self.initGrid()
@@ -156,6 +160,11 @@ class AppMainWindow(QMainWindow):
         exportAction.setStatusTip('Export Beat Sheet')
         exportAction.triggered.connect(self.export)
 
+        exportHtmlAction = QtGui.QAction(QIcon(exportHtmlIcon),'Export HTML', self)
+        exportHtmlAction.setShortcut('Ctrl+H')
+        exportHtmlAction.setStatusTip('Export Beat Sheet (HTML)')
+        exportHtmlAction.triggered.connect(self.exportHtml)
+
         self.statusBar()
 
         menubar = self.menuBar()
@@ -169,6 +178,7 @@ class AppMainWindow(QMainWindow):
         toolbar.addAction(saveAction)
         toolbar.addAction(openAction)
         toolbar.addAction(exportAction)
+        toolbar.addAction(exportHtmlAction)
         
         self.setWindowTitle('Save the Cat Beat Sheet') 
 
@@ -195,6 +205,9 @@ class AppMainWindow(QMainWindow):
         print("Export")
         self._grid.export()
 
+    def exportHtml(self):
+        self._grid.exportHtml()
+        
 
 def main():
     app = QApplication([])
