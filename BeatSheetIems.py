@@ -23,7 +23,6 @@ class BeatSheetItemWidget(QWidget):
         self.setStyleSheet("QLabel { color: #FFFFFF; font-size: 11px; background-color: #000000; padding: 5px;}")
         #self.setStyleSheet("QLabel { color: #FFFFFF; font-size: 11px; background-color: #000000; border: 1px solid rgba(188, 188, 188, 250); } QSpinBox { color: rgb(50, 50, 50); font-size: 11px; background-color: rgba(255, 188, 20, 50); }")
 
-
         self._title = QLabel("<b>" + self.title + "</b>",alignment=QtCore.Qt.AlignCenter)
         self.button = QPushButton("Click Me!")
         #self.text = QLabel("Hello World",alignment=QtCore.Qt.AlignCenter)
