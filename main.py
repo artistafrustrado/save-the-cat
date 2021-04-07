@@ -42,9 +42,6 @@ class ReferenceWidget(QWidget):
         with open('help/beat-sheet.html', "r") as read_file:
             reference = read_file.read()
 
-        # web_view.load(QUrl('http://www.www.pythoncentral.io'))
-        # web_view.setUrl(QUrl('http://www.www.pythoncentral.io'))
-
         # layout.addStretch()
 
         scroll = QtWidgets.QScrollArea()
@@ -53,9 +50,7 @@ class ReferenceWidget(QWidget):
         self._referenceText = QLabel(reference)
         scroll.setWidget(self._referenceText)
         grid = QVBoxLayout()
-#        grid.addWidget(self._referenceText)
         grid.addWidget(scroll)
-#        grid.addStretch()
         self.setLayout(grid)
 
     
@@ -277,16 +272,17 @@ class BeatSheetGridWidget(QWidget):
         for item in self._items:
             grid.addWidget(item['item'],item['position-x'], item['position-y'])
 
-        self._logLineText = BeatSheetLoglineWidget()
-        grid.addWidget(self._logLineText, 4, 2, 4, 3)
+        self._logLine = BeatSheetLogLineWidget()
+        grid.addWidget(self._logLine, 4, 2, 4, 3)
 
         self.setLayout(grid)
 
     def setLogLine(self, text):
-        self._logLineText.setPlainText(text)
+        self._logLine.setPlainText(text)
 
     def getLogLine(self):
-        return self._logLineText.toPlainText()
+        #return self._logLine.toPlainText()
+        return self._logLine.getLogLine()
 
 
 class AppMainWindow(QMainWindow):
@@ -397,6 +393,7 @@ class AppMainWindow(QMainWindow):
         movie_name = self._movie.getName()
         movie_theme = self._movie.getTheme()
         movie_genre = self._movie.getGenre()
+        movie_logline = self._grid.getLogLine()
         print(self._movie)
         author_name = self._author.getName()
         author_email = self._author.getEmail()
@@ -408,7 +405,7 @@ class AppMainWindow(QMainWindow):
         synopsis_text = self._synopsis.getSynopsis()
 
         movie = [
-                {'movie': {'name': movie_name, 'genre': movie_genre, 'theme': movie_theme}},
+                {'movie': {'name': movie_name, 'genre': movie_genre, 'theme': movie_theme,'logline': movie_logline}},
                 {'beat-sheet': items},
                 {'synopsis': synopsis_text},
                 {'plot': plot_text},
@@ -419,7 +416,7 @@ class AppMainWindow(QMainWindow):
         return movie
 
     def save(self):
-        movie = self.getData()
+        movie = self._getData()
 
         filename, filter = QFileDialog.getSaveFileName(parent=self, caption='Select Save the Cat file', dir='.', filter='Save the Cat Beat Sheet (*.cat)')
 

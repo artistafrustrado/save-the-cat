@@ -198,7 +198,7 @@ class BeatSheetItemFinalImageWidget(BeatSheetItemWidget):
         self.setUI()
 
 
-class BeatSheetLoglineWidget(QWidget):
+class BeatSheetLogLineWidget(QWidget):
     title = "Logline"
     _type = "logline"
     text = "Logline"
@@ -228,6 +228,12 @@ class BeatSheetLoglineWidget(QWidget):
     @QtCore.Slot()
     def magic(self):
         self.text.setText(random.choice(self.hello))
+
+    def getLogLine(self): 
+        return self._text.toPlainText()
+
+    def setLogLine(self, logline):
+        self._text.setPlainText(logline)
 
 #    def serialize(self):
 #        data = {"title": self.title, "type": self._type, "text": self._text.toPlainText()}
