@@ -34,12 +34,17 @@ class SynopsisWidget(QWidget):
     
     
 class ReferenceWidget(QWidget):
-    def __init__(self):
+    def __init__(self, referenceFile):
         super().__init__()
+        #self.referenceFile = 'help/beat-sheet.html'
+        self.referenceFile = referenceFile
         self.setUI()
 
+    def setReferenceFile(self, file):
+        self.referenceFile = file
+
     def setUI(self):
-        with open('help/beat-sheet.html', "r") as read_file:
+        with open(self.referenceFile, "r") as read_file:
             reference = read_file.read()
 
         # layout.addStretch()
@@ -79,16 +84,13 @@ class MovieWidget(QWidget):
         return self._movieGenreText.text()
 
     def setName(self, text):
-        self._movieNameText = text
-        self._text.text(self._movieNameText)
+        self._movieNameText.setText(text)
     
     def setTheme(self, text):
-        self._movieThemeText = text
-        self._text.text(self._movieThemeText)
+        self._movieThemeText.setText(text)
     
     def setGenre(self, text):
-        self._movieGenreText = text
-        self._text.text(self._movieGenreText)
+        self._movieGenreText.setText(text)
     
 class AuthorWidget(QWidget):
     def __init__(self):
@@ -109,22 +111,19 @@ class AuthorWidget(QWidget):
         return self._authorNameText.text()
 
     def setName(self, text):
-        self._authorNameText = text
-        self._text.text(self._authorNameText)
+        self._authorNameText.setText(text)
     
     def getEmail(self):
         return self._authorEmailText.text()
 
     def setEmail(self, text):
-        self._authorEmailText = text
-        self._text.text(self._authorEmailText)
+        self._authorEmailText.setText(text)
 
     def getInstitute(self):
         return self._authorInstituteText.text()
 
     def setInstitute(self, text):
-        self._authorInstituteText = text
-        self._text.text(self._authorInstituteText)
+        self._authorInstituteText.setText(text)
 
 
 class EscaletaWidget(QWidget):
@@ -187,10 +186,14 @@ class PlotWidget(QWidget):
     
 
 class BeatSheetGridWidget(QWidget):
+    _parent = ''
     _items = []
     def __init__(self):
         super().__init__()
         self.setUI()
+
+    def setParent(self, parent):
+        self._parent = parent
 
     def getItems(self):
         items = []
@@ -232,10 +235,15 @@ class BeatSheetGridWidget(QWidget):
         filename, filter = QFileDialog.getOpenFileName(self, 'Open file', '~/')
         with open(filename, 'r') as json_data:
             json_data = json.load(json_data)
-            for item in self._items:
-                for entry in json_data:
-                    if entry['type'] == item['item'].getType():
-                        item['item'].setText(entry['text'])
+            print(json_data)
+            print('*'*80)
+            self._parent.loadData(json_data)
+#            for item in self._items:
+                # beat-sheet
+#                for entry in json_data:
+                    #print(entry)
+#                    if entry['type'] == item['item'].getType():
+#                        item['item'].setText(entry['text'])
 #        fileName = QFileDialog.getOpenFileName()
 #        print(fileName)
 #        fname, _ = QFileDialog.getOpenFileName(self, 'Open file', '/home')
@@ -278,10 +286,9 @@ class BeatSheetGridWidget(QWidget):
         self.setLayout(grid)
 
     def setLogLine(self, text):
-        self._logLine.setPlainText(text)
+        self._logLine.setLogLine(text)
 
     def getLogLine(self):
-        #return self._logLine.toPlainText()
         return self._logLine.getLogLine()
 
 
@@ -299,6 +306,7 @@ class AppMainWindow(QMainWindow):
         textEdit = QTextEdit()
         #self.setCentralWidget(textEdit)
         self._grid = BeatSheetGridWidget()
+        self._grid.setParent(self)
         self.setCentralWidget(self.tabs)
         
         self._synopsis = SynopsisWidget()
@@ -307,7 +315,8 @@ class AppMainWindow(QMainWindow):
         self._escaleta = EscaletaWidget()
         self._author = AuthorWidget()
         self._movie = MovieWidget()
-        self._reference = ReferenceWidget()
+        self._reference = ReferenceWidget('help/beat-sheet.html')
+        self._reference_prop = ReferenceWidget('help/setting-props.html')
 
         self.tabs.addTab(self._grid,"Beat Sheet")
         self.tabs.addTab(self._movie,"Movie Info")
@@ -317,6 +326,7 @@ class AppMainWindow(QMainWindow):
         self.tabs.addTab(self._escaleta,"Escaleta")
         self.tabs.addTab(self._author,"Author")
         self.tabs.addTab(self._reference,"Reference")
+        self.tabs.addTab(self._reference_prop,"Ref. Props")
 
 #        self.layout.addWidget(self.tabs)
 #        self.setLayout(self.layout)
@@ -389,12 +399,10 @@ class AppMainWindow(QMainWindow):
 
     def _getData(self):
         items = self._grid.getItems()
-#        print(items)
         movie_name = self._movie.getName()
         movie_theme = self._movie.getTheme()
         movie_genre = self._movie.getGenre()
         movie_logline = self._grid.getLogLine()
-        print(self._movie)
         author_name = self._author.getName()
         author_email = self._author.getEmail()
         author_institute = self._author.getInstitute()
@@ -415,6 +423,30 @@ class AppMainWindow(QMainWindow):
                 ]
         return movie
 
+    def setName(self, name):
+        self._movie.setName(name)
+
+    def setGenre(self, name):
+        self._movie.setGenre(name)
+
+    def setTheme(self, name):
+        self._movie.setTheme(name)
+
+    def loadData(self, data):
+            print(data[0])
+            self.setName(data[0]['movie']['name'])
+            self.setGenre(data[0]['movie']['genre'])
+            self.setTheme(data[0]['movie']['theme'])
+            self._grid.setLogLine(data[0]['movie']['logline'])
+            self._author.setName(data[6]['author']['name'])
+            self._author.setEmail(data[6]['author']['email'])
+            self._author.setInstitute(data[6]['author']['institute'])
+            self._synopsis.setSynopsis(data[2]['synopsis'])
+            self._plot.setPlot(data[3]['plot'])
+            self._argumento.setArgumento(data[4]['argumento'])
+            self._escaleta.setEscaleta(data[5]['escaleta'])
+            print(data[1])
+
     def save(self):
         movie = self._getData()
 
@@ -432,7 +464,8 @@ class AppMainWindow(QMainWindow):
         #self._grid.open()
         print("Open")
         self._grid.load()
-    
+        self._load()
+
     def new(self):
         print("New")
 
@@ -442,7 +475,9 @@ class AppMainWindow(QMainWindow):
 
     def exportHtml(self):
         self._grid.exportHtml()
-        
+
+    def _load(self):
+        pass
 
 def main():
     app = QApplication([])
