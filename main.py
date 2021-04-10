@@ -235,15 +235,20 @@ class BeatSheetGridWidget(QWidget):
         filename, filter = QFileDialog.getOpenFileName(self, 'Open file', '~/')
         with open(filename, 'r') as json_data:
             json_data = json.load(json_data)
-            print(json_data)
+#            print(json_data)
             print('*'*80)
+#            print(json_data[1])
+#            print(json_data[1]['beat-sheet'])
             self._parent.loadData(json_data)
-#            for item in self._items:
+
+            for item in self._items:
                 # beat-sheet
-#                for entry in json_data:
-                    #print(entry)
-#                    if entry['type'] == item['item'].getType():
-#                        item['item'].setText(entry['text'])
+#                print(json_data[1])
+                for entry in json_data[1]['beat-sheet']:
+                    print(entry)
+                        #print(item['type'])
+                    if entry['type'] == item['item'].getType():
+                        item['item'].setText(entry['text'])
 #        fileName = QFileDialog.getOpenFileName()
 #        print(fileName)
 #        fname, _ = QFileDialog.getOpenFileName(self, 'Open file', '/home')
