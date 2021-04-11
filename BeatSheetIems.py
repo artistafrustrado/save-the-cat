@@ -21,17 +21,14 @@ class BeatSheetItemWidget(QWidget):
         self.hello = ["Hello World","Hei maailma","Hola Mundo", "Can't type that"]
 
         self.setStyleSheet("QLabel { color: #FFFFFF; font-size: 11px; background-color: #000000; padding: 5px;}")
-        #self.setStyleSheet("QLabel { color: #FFFFFF; font-size: 11px; background-color: #000000; border: 1px solid rgba(188, 188, 188, 250); } QSpinBox { color: rgb(50, 50, 50); font-size: 11px; background-color: rgba(255, 188, 20, 50); }")
 
         self._title = QLabel("<b>" + self.title + "</b>",alignment=QtCore.Qt.AlignCenter)
         self.button = QPushButton("Click Me!")
-        #self.text = QLabel("Hello World",alignment=QtCore.Qt.AlignCenter)
         self._text = QTextEdit()
         self._text.setPlainText(self.text)
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self._title)
         self.layout.addWidget(self._text)
-#        self.layout.addWidget(self.button)
 
         self.setLayout(self.layout)
 
@@ -235,20 +232,4 @@ class BeatSheetLogLineWidget(QWidget):
     def setLogLine(self, logline):
         self._text.setPlainText(logline)
 
-#    def serialize(self):
-#        data = {"title": self.title, "type": self._type, "text": self._text.toPlainText()}
-#        return data
-#
-#    def setType(self, string_type):
-#        self._type = string_type
-#
-#    def getType(self):
-#        return self._type
-#
-#    def setText(self, text):
-#        self.text = text
-#        self._text.setPlainText(self.text)
-#    
-#    def setTitle(self, title):
-#        self.title = title
 
