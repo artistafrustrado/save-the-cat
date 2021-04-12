@@ -247,13 +247,6 @@ class BeatSheetGridWidget(QWidget):
             print(json_data)
             print('*'*80)
             self._parent.loadData(json_data)
-#            for item in self._items:
-                # beat-sheet
-#                for entry in json_data:
-                    #print(entry)
-#                    if entry['type'] == item['item'].getType():
-#                        item['item'].setText(entry['text'])
-
 
 
 class AppMainWindow(QMainWindow):
@@ -332,6 +325,11 @@ class AppMainWindow(QMainWindow):
         exportHtmlAction.setStatusTip('Export Beat Sheet (HTML)')
         exportHtmlAction.triggered.connect(self.exportHtml)
 
+        exportOdtAction = QtGui.QAction(QIcon(exportHtmlIcon),'Export ODT', self)
+        exportOdtAction.setShortcut('Ctrl+T')
+        exportOdtAction.setStatusTip('Export Beat Sheet (ODT)')
+        exportOdtAction.triggered.connect(self.exportOdt)
+
         self.statusBar()
 
         menubar = self.menuBar()
@@ -344,12 +342,14 @@ class AppMainWindow(QMainWindow):
         fileMenu = menubar.addMenu('&Export')
         fileMenu.addAction(exportAction)
         fileMenu.addAction(exportHtmlAction)
+        fileMenu.addAction(exportOdtAction)
 
         toolbar.addAction(newAction)
         toolbar.addAction(saveAction)
         toolbar.addAction(openAction)
         toolbar.addAction(exportAction)
         toolbar.addAction(exportHtmlAction)
+        toolbar.addAction(exportOdtAction)
         
         self.setWindowTitle('Save the Cat Beat Sheet') 
 
@@ -445,6 +445,13 @@ class AppMainWindow(QMainWindow):
     def exportHtml(self):
         data = self._getData()
         tex = BeatSheetExporterHtml()
+        tex.setData(data)
+        tex.setParent(self)
+        tex.export()
+
+    def exportOdt(self):
+        data = self._getData()
+        tex = BeatSheetExporterOdt()
         tex.setData(data)
         tex.setParent(self)
         tex.export()

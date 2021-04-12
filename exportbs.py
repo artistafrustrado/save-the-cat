@@ -10,6 +10,12 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from PySide6 import QtCore, QtWidgets, QtGui
 
+# For odt handling
+from odf.opendocument import OpenDocumentText
+from odf.style import (Style, TextProperties, ParagraphProperties, ListLevelProperties, TabStop, TabStops)
+from odf.text import (H, P, List, ListItem, ListStyle, ListLevelStyleNumber, ListLevelStyleBullet)
+from odf import teletype
+
 
 class BeatSheetExporter:
     def __init__(self):
@@ -103,14 +109,6 @@ class BeatSheetExporterHtml(BeatSheetExporter):
     def generate(self):
         buffer = ''
 
-#<div class="card">
-#      <div class="card-body">
-#        <h5 class="card-title">Special title treatment</h5>
-#        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-#        <a href="#" class="btn btn-primary">Go somewhere</a>
-#      </div>
-#</div>
-
         with open('templates/export.html', "r") as read_file:
             reference = read_file.read()
             buffer += "<h2>Name</h2>\n\n"
@@ -160,16 +158,191 @@ class BeatSheetExporterRtf:
         pass
 
 
-class BeatSheetExporterOdt:
+class BeatSheetExporterOdt(BeatSheetExporter):
     def __init__(self):
-        pass
+        super().__init__()
+        self.caption = 'ODT File'
+        self.filter = 'ODT File (*.odt)'
+        self.extention = 'odt'
+    
+    def exportFile(self):
+        movie = self.generate()
+
+    def _addSubSection(self, title, text):
+        # Adding second heading
+        mysecondheading_element = H(outlinelevel=1, stylename=self._h2style)
+        mysecondheading_text = title 
+        teletype.addTextToElement(mysecondheading_element, mysecondheading_text)
+        self._textdoc.text.addElement(mysecondheading_element)
+
+        if text != '':
+            # Adding a paragraph
+            paragraph_element = P(stylename=self._justifystyle)
+            paragraph_text = text
+            teletype.addTextToElement(paragraph_element, paragraph_text)
+            self._textdoc.text.addElement(paragraph_element, paragraph_text)
+
+    def _addSubSubSection(self, title, text):
+        # Adding second heading
+        mysecondheading_element = H(outlinelevel=2, stylename=self._h3style)
+        mysecondheading_text = title 
+        teletype.addTextToElement(mysecondheading_element, mysecondheading_text)
+        self._textdoc.text.addElement(mysecondheading_element)
+
+        if text != '':
+            # Adding a paragraph
+            paragraph_element = P(stylename=self._justifystyle)
+            paragraph_text = text
+            teletype.addTextToElement(paragraph_element, paragraph_text)
+            self._textdoc.text.addElement(paragraph_element, paragraph_text)
+
+    def _addParagraph(self, text):
+        paragraph_element = P(stylename=self._justifystyle)
+        paragraph_text = text
+        teletype.addTextToElement(paragraph_element, paragraph_text)
+        self._textdoc.text.addElement(paragraph_element, paragraph_text)
+
+    def generate(self):
+        self._textdoc = OpenDocumentText()
+
+        # Creating different style used in the document
+        s = self._textdoc.styles
+
+        # For Level-1 Headings that are centerd
+        h1style = Style(name="BsHeading 1", family="paragraph")
+        h1style.addElement(ParagraphProperties(attributes={"textalign": "center"}))
+        h1style.addElement(TextProperties(attributes={"fontsize": "18pt", "fontweight": "bold"}))
+
+        # For Level-2 Headings that are centered
+        self._h2style = Style(name="BsHeading 2", family="paragraph")
+        self._h2style.addElement(ParagraphProperties(attributes={"textalign": "left"}))
+        self._h2style.addElement(TextProperties(attributes={"fontsize": "15pt", "fontweight": "bold"}))
+
+        # For Level-3 Headings that are centered
+        self._h3style = Style(name="BsHeading 3", family="paragraph")
+        self._h3style.addElement(ParagraphProperties(attributes={"textalign": "left"}))
+        self._h3style.addElement(TextProperties(attributes={"fontsize": "14pt", "fontweight": "bold"}))
+
+        # For bold text
+        boldstyle = Style(name="Bold", family="text")
+        boldstyle.addElement(TextProperties(attributes={"fontweight": "bold"}))
+
+        # For numbered list
+        numberedliststyle = ListStyle(name="NumberedList")
+        level = 1
+        numberedlistproperty = ListLevelStyleNumber(
+            level=str(level), numsuffix=".", startvalue=1)
+        numberedlistproperty.setAttribute('numsuffix', ".")
+        numberedlistproperty.addElement(ListLevelProperties(
+            minlabelwidth="%fcm" % (level - .2)))
+        numberedliststyle.addElement(numberedlistproperty)
+
+        # For Bulleted list
+        bulletedliststyle = ListStyle(name="BulletList")
+        level = 1
+        bulletlistproperty = ListLevelStyleBullet(level=str(level), bulletchar=u"•")
+        bulletlistproperty.addElement(ListLevelProperties(minlabelwidth="%fcm" % level))
+        bulletedliststyle.addElement(bulletlistproperty)
+
+
+        # Justified style
+        self._justifystyle = Style(name="justified", family="paragraph")
+        self._justifystyle.addElement(ParagraphProperties(attributes={"textalign": "justify"}))
+
+        # Creating a tabstop at 10cm
+        tabstops_style = TabStops()
+        tabstop_style = TabStop(position="10cm")
+        tabstops_style.addElement(tabstop_style)
+        tabstoppar = ParagraphProperties()
+        tabstoppar.addElement(tabstops_style)
+        tabparagraphstyle = Style(name="Question", family="paragraph")
+        tabparagraphstyle.addElement(tabstoppar)
+        s.addElement(tabparagraphstyle)
+
+
+        # Register created styles to styleset
+        s.addElement(h1style)
+        s.addElement(self._h2style)
+        s.addElement(boldstyle)
+        s.addElement(numberedliststyle)
+        s.addElement(bulletedliststyle)
+        s.addElement(self._justifystyle)
+        s.addElement(tabparagraphstyle)
+
+        # Adding main heading
+        mymainheading_element = H(outlinelevel=1, stylename=h1style)
+        mymainheading_text = "Save the Cat Beat Sheet"
+        teletype.addTextToElement(mymainheading_element, mymainheading_text)
+        self._textdoc.text.addElement(mymainheading_element)
+
+        self._addSubSection('Name', self._data[0]['movie']['name'])
+        self._addSubSection('LogLine', self._data[0]['movie']['logline'])
+        self._addSubSection('Theme', self._data[0]['movie']['theme'])
+        self._addSubSection('Genre', self._data[0]['movie']['genre'])
+        self._addSubSection('Author', '')
+        self._addParagraph('Nome: ' + self._data[6]['author']['name'])
+        self._addParagraph('e-mail: ' +  self._data[6]['author']['email'])
+        self._addParagraph('Institute: ' + self._data[6]['author']['institute'])
+
+        self._addSubSection('Synopsis', self._data[2]['synopsis'])
+        self._addSubSection('Beat Sheet', '')
+        for card in self._data[1]['beat-sheet']:
+            self._addSubSubSection(card['title'], card['text'])
+
+
+        self._addSubSection('Plot', self._data[3]['plot'])
+        self._addSubSection('Argumento', self._data[4]['argumento'])
+        self._addSubSection('Escaleta', self._data[5]['escaleta'])
+
+        # Adding bulleted list
+#        bulletlist = List(stylename=bulletedliststyle)
+#        listitemelement1 = ListItem()
+#        listitemelement1_paragraph = P()
+#        listitemelement1_content = "My first item"
+#        teletype.addTextToElement(listitemelement1_paragraph, listitemelement1_content)
+#        listitemelement1.addElement(listitemelement1_paragraph)
+#        bulletlist.addElement(listitemelement1)
+#        listitemelement2 = ListItem()
+#        listitemelement2_paragraph = P()
+#        listitemelement2_content = "My second item"
+#        teletype.addTextToElement(listitemelement2_paragraph, listitemelement2_content)
+#        listitemelement2.addElement(listitemelement2_paragraph)
+#        bulletlist.addElement(listitemelement2)
+#
+#        self._textdoc.text.addElement(bulletlist)
+#
+#        # Adding numbered list
+#        numberlist = List(stylename=numberedliststyle)
+#        listitemelement1 = ListItem()
+#        listitemelement1_paragraph = P()
+#        listitemelement1_content = "My first item"
+#        teletype.addTextToElement(listitemelement1_paragraph, listitemelement1_content)
+#        listitemelement1.addElement(listitemelement1_paragraph)
+#        numberlist.addElement(listitemelement1)
+#        listitemelement2 = ListItem()
+#        listitemelement2_paragraph = P()
+#        listitemelement2_content = "My second item"
+#        teletype.addTextToElement(listitemelement2_paragraph, listitemelement2_content)
+#        listitemelement2.addElement(listitemelement2_paragraph)
+##        numberlist.addElement(listitemelement2)
+##
+#        self._textdoc.text.addElement(numberlist)
+
+        # Adding a tabbed sentence to check tabstop
+#        newtext = "Testing\tTabstops"
+#        tabp = P(stylename=tabparagraphstyle)
+#        teletype.addTextToElement(tabp, newtext)
+#        self._textdoc.text.addElement(tabp)
+
+        self._textdoc.save(u"/tmp/save-the-cat.odt")
+
 
 #from odf.opendocument import OpenDocumentText
 #from odf.text import P    
-#textdoc = OpenDocumentText()
+#self._textdoc = OpenDocumentText()
 #p = P(text="Hello World!")
-#textdoc.text.addElement(p)
-#textdoc.save("helloworld", True)
+#self._textdoc.text.addElement(p)
+#self._textdoc.save("helloworld", True)
 #
 # https://gist.github.com/balasankarc/1832670ec8ddd9a34d33
 # https://balasankarc.in/tech/using-python-and-odfpy-to-create-open-document-texts.html
