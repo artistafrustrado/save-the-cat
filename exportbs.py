@@ -53,35 +53,35 @@ class BeatSheetExporter:
         with open('templates/export-latex.tex', "r") as read_file:
             reference = read_file.read()
             buffer += "\subsection{Name}\n\n"
-            buffer += self._data[0]['movie']['name'] + "\n\n"
+            buffer += self._data['movie']['name'] + "\n\n"
             buffer += "\subsection{LogLine}\n\n"
-            buffer += self._data[0]['movie']['logline']  + "\n\n"
+            buffer += self._data['movie']['logline']  + "\n\n"
             buffer += "\subsection{Theme}\n\n"
-            buffer += self._data[0]['movie']['theme'] + "\n\n"
+            buffer += self._data['movie']['theme'] + "\n\n"
             buffer += "\subsection{Genre}\n\n"
-            buffer += self._data[0]['movie']['genre'] + "\n\n"
+            buffer += self._data['movie']['genre'] + "\n\n"
             buffer += "\n\n"
             buffer += "\subsection{Author}\n\n"
-            buffer += "\\textbf{Name}: " + self._data[6]['author']['name'] + "\n\n"
-            buffer += "\\textbf{e-mail}: " + self._data[6]['author']['email'] + "\n\n"
-            buffer += "\\textbf{Institute}: " + self._data[6]['author']['institute'] + "\n\n"
+            buffer += "\\textbf{Name}: " + self._data['author']['name'] + "\n\n"
+            buffer += "\\textbf{e-mail}: " + self._data['author']['email'] + "\n\n"
+            buffer += "\\textbf{Institute}: " + self._data['author']['institute'] + "\n\n"
             
             buffer += "\subsection{Beat Sheet}\n\n"
-            for card in self._data[1]['beat-sheet']:
+            for card in self._data['beat-sheet']:
                 buffer += "\subsubsection{" + card["title"] + "}\n\n"
                 buffer += card['text'] + "\n\n"
 
             buffer += "\subsection{Synopsis}\n\n"
-            buffer += self._data[2]['synopsis'] + "\n\n"
+            buffer += self._data['synopsis'] + "\n\n"
 
             buffer += "\subsection{Plot}\n\n"
-            buffer += self._data[3]['plot'] + "\n\n"
+            buffer += self._data['plot'] + "\n\n"
             
             buffer += "\subsection{Argumento}\n\n"
-            buffer += self._data[4]['argumento'] + "\n\n"
+            buffer += self._data['argumento'] + "\n\n"
             
             buffer += "\subsection{Escaleta}\n\n"
-            buffer += self._data[5]['escaleta'] + "\n\n"
+            buffer += self._data['escaleta'] + "\n\n"
             
             buffer += "\n\n"
 
@@ -112,21 +112,21 @@ class BeatSheetExporterHtml(BeatSheetExporter):
         with open('templates/export.html', "r") as read_file:
             reference = read_file.read()
             buffer += "<h2>Name</h2>\n\n"
-            buffer += self._data[0]['movie']['name'] + "\n\n"
+            buffer += self._data['movie']['name'] + "\n\n"
             buffer += "<h2>LogLine</h2>\n\n"
-            buffer += self._data[0]['movie']['logline']  + "\n\n"
+            buffer += self._data['movie']['logline']  + "\n\n"
             buffer += "<h2>Theme</h2>\n\n"
-            buffer += self._data[0]['movie']['theme'] + "\n\n"
+            buffer += self._data['movie']['theme'] + "\n\n"
             buffer += "<h2>Genre</h2>\n\n"
-            buffer += self._data[0]['movie']['genre'] + "\n\n"
+            buffer += self._data['movie']['genre'] + "\n\n"
             buffer += "\n\n"
             buffer += "<h2>Author</h2\n\n"
-            buffer += "<b>Name}</b>: " + self._data[6]['author']['name'] + "\n<br/>\n\n"
-            buffer += "<b>e-mail}</b>: " + self._data[6]['author']['email'] + "\n<br/>\n\n"
-            buffer += "<b>Institute</b>: " + self._data[6]['author']['institute'] + "\n<br/>\n\n"
+            buffer += "<b>Name}</b>: " + self._data['author']['name'] + "\n<br/>\n\n"
+            buffer += "<b>e-mail}</b>: " + self._data['author']['email'] + "\n<br/>\n\n"
+            buffer += "<b>Institute</b>: " + self._data['author']['institute'] + "\n<br/>\n\n"
             
             buffer += "<h2>Beat Sheet</h2>\n\n"
-            for card in self._data[1]['beat-sheet']:
+            for card in self._data['beat-sheet']:
                 buffer += '    <div class="card">'
                 buffer += '      <div class="card-body">'
                 buffer += '        <h5 class="card-title">' + card['title'] + '</h5>'
@@ -135,16 +135,16 @@ class BeatSheetExporterHtml(BeatSheetExporter):
                 buffer += '</div>' + "\n\n"
 
             buffer += "<h2>Synopsis</h2>\n\n"
-            buffer += self._data[2]['synopsis'] + "\n\n"
+            buffer += self._data['synopsis'] + "\n\n"
 
             buffer += "<h2>Plot</h2>\n\n"
-            buffer += self._data[3]['plot'] + "\n\n"
+            buffer += self._data['plot'] + "\n\n"
             
             buffer += "<h2>Argumento</h2>\n\n"
-            buffer += self._data[4]['argumento'] + "\n\n"
+            buffer += self._data['argumento'] + "\n\n"
             
             buffer += "<h2>Escaleta</h2>\n\n"
-            buffer += self._data[5]['escaleta'] + "\n\n"
+            buffer += self._data['escaleta'] + "\n\n"
             
             buffer += "\n\n"
 
@@ -275,24 +275,24 @@ class BeatSheetExporterOdt(BeatSheetExporter):
         teletype.addTextToElement(mymainheading_element, mymainheading_text)
         self._textdoc.text.addElement(mymainheading_element)
 
-        self._addSubSection('Name', self._data[0]['movie']['name'])
-        self._addSubSection('LogLine', self._data[0]['movie']['logline'])
-        self._addSubSection('Theme', self._data[0]['movie']['theme'])
-        self._addSubSection('Genre', self._data[0]['movie']['genre'])
+        self._addSubSection('Name', self._data['movie']['name'])
+        self._addSubSection('LogLine', self._data['movie']['logline'])
+        self._addSubSection('Theme', self._data['movie']['theme'])
+        self._addSubSection('Genre', self._data['movie']['genre'])
         self._addSubSection('Author', '')
-        self._addParagraph('Nome: ' + self._data[6]['author']['name'])
-        self._addParagraph('e-mail: ' +  self._data[6]['author']['email'])
-        self._addParagraph('Institute: ' + self._data[6]['author']['institute'])
+        self._addParagraph('Nome: ' + self._data['author']['name'])
+        self._addParagraph('e-mail: ' +  self._data['author']['email'])
+        self._addParagraph('Institute: ' + self._data['author']['institute'])
 
-        self._addSubSection('Synopsis', self._data[2]['synopsis'])
+        self._addSubSection('Synopsis', self._data['synopsis'])
         self._addSubSection('Beat Sheet', '')
         for card in self._data[1]['beat-sheet']:
             self._addSubSubSection(card['title'], card['text'])
 
 
-        self._addSubSection('Plot', self._data[3]['plot'])
-        self._addSubSection('Argumento', self._data[4]['argumento'])
-        self._addSubSection('Escaleta', self._data[5]['escaleta'])
+        self._addSubSection('Plot', self._data['plot'])
+        self._addSubSection('Argumento', self._data['argumento'])
+        self._addSubSection('Escaleta', self._data['escaleta'])
 
         # Adding bulleted list
 #        bulletlist = List(stylename=bulletedliststyle)

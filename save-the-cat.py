@@ -376,15 +376,15 @@ class AppMainWindow(QMainWindow):
         argumento_text = self._argumento.getArgumento()
         synopsis_text = self._synopsis.getSynopsis()
 
-        movie = [
-                {'movie': {'name': movie_name, 'genre': movie_genre, 'theme': movie_theme,'logline': movie_logline}},
-                {'beat-sheet': items},
-                {'synopsis': synopsis_text},
-                {'plot': plot_text},
-                {'argumento': argumento_text},
-                {'escaleta': escaleta_text},
-                {'author': {'name':author_name, 'email': author_email, 'institute':author_institute }}
-                ]
+        movie = {
+                'movie': {'name': movie_name, 'genre': movie_genre, 'theme': movie_theme,'logline': movie_logline},
+                'beat-sheet': items,
+                'synopsis': synopsis_text,
+                'plot': plot_text,
+                'argumento': argumento_text,
+                'escaleta': escaleta_text,
+                'author': {'name':author_name, 'email': author_email, 'institute':author_institute }
+                }
         return movie
 
     def setName(self, name):
@@ -397,18 +397,18 @@ class AppMainWindow(QMainWindow):
         self._movie.setTheme(name)
 
     def loadData(self, data):
-            print(data[0])
-            self.setName(data[0]['movie']['name'])
-            self.setGenre(data[0]['movie']['genre'])
-            self.setTheme(data[0]['movie']['theme'])
-            self._grid.setLogLine(data[0]['movie']['logline'])
-            self._author.setName(data[6]['author']['name'])
-            self._author.setEmail(data[6]['author']['email'])
-            self._author.setInstitute(data[6]['author']['institute'])
-            self._synopsis.setSynopsis(data[2]['synopsis'])
-            self._plot.setPlot(data[3]['plot'])
-            self._argumento.setArgumento(data[4]['argumento'])
-            self._escaleta.setEscaleta(data[5]['escaleta'])
+            print(data)
+            self.setName(data['movie']['name'])
+            self.setGenre(data['movie']['genre'])
+            self.setTheme(data['movie']['theme'])
+            self._grid.setLogLine(data['movie']['logline'])
+            self._author.setName(data['author']['name'])
+            self._author.setEmail(data['author']['email'])
+            self._author.setInstitute(data['author']['institute'])
+            self._synopsis.setSynopsis(data['synopsis'])
+            self._plot.setPlot(data['plot'])
+            self._argumento.setArgumento(data['argumento'])
+            self._escaleta.setEscaleta(data['escaleta'])
 
     def load(self):
         pass
